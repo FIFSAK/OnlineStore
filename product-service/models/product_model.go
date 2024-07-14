@@ -9,3 +9,13 @@ type Product struct {
 	Quantity    int     `json:"quantity"`
 	DateAdded   string  `json:"date_added"`
 }
+
+type ProductModel interface {
+	GetProducts() ([]*Product, error)
+	CreateProduct(product Product) error
+	GetProductByID(id int) (*Product, error)
+	UpdateProduct(product Product) error
+	DeleteProduct(id int) error
+	GetProductByName(name string) ([]*Product, error)
+	GetProductByCategory(category string) ([]*Product, error)
+}
