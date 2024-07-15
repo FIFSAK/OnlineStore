@@ -3,6 +3,7 @@ package repository
 import (
 	"OnlineStore/order-service/models"
 	"database/sql"
+	"fmt"
 )
 
 type OrderRepository struct {
@@ -83,6 +84,22 @@ func (or *OrderRepository) CreateOrder(order models.Order) error {
 	if err != nil {
 		return err
 	}
+	productsCount := make(map[int]int)
+	for _, productID := range order.ProductIDs {
+		productsCount[productID]++
+	}
+	for productID, count := range productsCount {
+		var quantity int
+		err := tx.QueryRow("SELECT quantity FROM products WHERE id = $1", productID).Scan(&quantity)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+		if quantity < count {
+			tx.Rollback()
+			return fmt.Errorf("not enough quantity for product %d", productID)
+		}
+	}
 
 	totalPrice := 0.0
 
@@ -129,7 +146,23 @@ func (or *OrderRepository) UpdateOrder(order models.Order) error {
 	if err != nil {
 		return err
 	}
-
+	productsCount := make(map[int]int)
+	for _, productID := range order.ProductIDs {
+		productsCount[productID]++
+	}
+	for productID, count := range productsCount {
+		var quantity int
+		err := tx.QueryRow("SELECT quantity FROM products WHERE id = $1", productID).Scan(&quantity)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+		if quantity < count {
+			tx.Rollback()
+			return fmt.Errorf("not enough quantity for product %d", productID)
+		}
+	}
+	
 	totalPrice := 0.0
 
 	for _, productID := range order.ProductIDs {
