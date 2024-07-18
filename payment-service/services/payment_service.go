@@ -38,12 +38,16 @@ func GetToken() (string, error) {
 	data.Set("scope", "webapi usermanagement email_send verification statement statistics payment")
 	data.Set("client_id", "test")
 	data.Set("client_secret", "yF587AV9Ms94qN2QShFzVR3vFnWkhjbAK3sG")
+	data.Set("invoiceId", "000001")
+	data.Set("amount", "100")
+	data.Set("currency", "KZT")
+	data.Set("terminalId", "67e34d63-102f-4bd1-898e-370781d0074d")
 
 	req, err := http.NewRequest("POST", tokenURL, strings.NewReader(data.Encode()))
 	if err != nil {
 		return "", err
 	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Content-Type", "application/form-data")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -57,8 +61,10 @@ func GetToken() (string, error) {
 		return "", err
 	}
 
+	fmt.Println(resp)
+
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("error: %s", body)
+		return "", fmt.Errorf("status: %s, body: %s ", resp.Status, body)
 	}
 	var token TokenResponse
 	err = json.Unmarshal(body, &token)
@@ -134,14 +140,14 @@ func CreatePayment() (string, error) {
 		"currency":        "KZT",
 		"name":            "JON JONSON",
 		"cryptogram":      encryptedData,
-		"invoiceId":       "000001",
+		"invoiceId":       "000000001",
 		"invoiceIdAlt":    "8564546",
 		"description":     "test payment",
 		"accountId":       "uuid000001",
 		"email":           "jj@example.com",
 		"phone":           "77777777777",
 		"cardSave":        true,
-		"data":            `{"statement":{"name":"Arman Ali","invoiceID":"80000016"}}`,
+		"data":            `{\"statement\":{\"name\":\"Arman     Ali\",\"invoiceID\":\"80000016\"}}`,
 		"postLink":        "https://testmerchant/order/1123",
 		"failurePostLink": "https://testmerchant/order/1123/fail",
 	}
