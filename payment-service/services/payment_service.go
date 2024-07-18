@@ -10,9 +10,8 @@ import (
 	"encoding/pem"
 	"fmt"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
-	"net/url"
-	"strings"
 )
 
 type TokenResponse struct {
@@ -33,21 +32,33 @@ type CryptogramResponse struct {
 func GetToken() (string, error) {
 	tokenURL := "https://testoauth.homebank.kz/epay2/oauth2/token"
 
-	data := url.Values{}
-	data.Set("grant_type", "client_credentials")
-	data.Set("scope", "webapi usermanagement email_send verification statement statistics payment")
-	data.Set("client_id", "test")
-	data.Set("client_secret", "yF587AV9Ms94qN2QShFzVR3vFnWkhjbAK3sG")
-	data.Set("invoiceId", "000001")
-	data.Set("amount", "100")
-	data.Set("currency", "KZT")
-	data.Set("terminalId", "67e34d63-102f-4bd1-898e-370781d0074d")
+	// Создаем буфер для тела запроса и writer для multipart формы
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
 
-	req, err := http.NewRequest("POST", tokenURL, strings.NewReader(data.Encode()))
+	// Добавляем поля формы
+	writer.WriteField("grant_type", "client_credentials")
+	writer.WriteField("scope", "webapi usermanagement email_send verification statement statistics payment")
+	writer.WriteField("client_id", "test")
+	writer.WriteField("client_secret", "yF587AV9Ms94qN2QShFzVR3vFnWkhjbAK3sG")
+	writer.WriteField("invoiceId", "000000001")
+	writer.WriteField("amount", "100")
+	writer.WriteField("currency", "KZT")
+	writer.WriteField("terminalId", "67e34d63-102f-4bd1-898e-370781d0074d")
+
+	// Закрываем writer чтобы отправить все данные
+	err := writer.Close()
 	if err != nil {
 		return "", err
 	}
-	req.Header.Set("Content-Type", "application/form-data")
+
+	req, err := http.NewRequest("POST", tokenURL, body)
+	if err != nil {
+		return "", err
+	}
+
+	// Устанавливаем заголовок Content-Type включая boundary
+	req.Header.Set("Content-Type", writer.FormDataContentType())
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -56,18 +67,17 @@ func GetToken() (string, error) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
 
-	fmt.Println(resp)
-
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("status: %s, body: %s ", resp.Status, body)
+		return "", fmt.Errorf("status: %s, body: %s ", resp.Status, respBody)
 	}
+
 	var token TokenResponse
-	err = json.Unmarshal(body, &token)
+	err = json.Unmarshal(respBody, &token)
 	if err != nil {
 		return "", err
 	}
@@ -151,7 +161,6 @@ func CreatePayment() (string, error) {
 		"postLink":        "https://testmerchant/order/1123",
 		"failurePostLink": "https://testmerchant/order/1123/fail",
 	}
-
 	jsonBody, err := json.Marshal(body)
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal body: %v", err)
