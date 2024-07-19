@@ -133,16 +133,25 @@ func encryptData() (string, error) {
 	return base64.StdEncoding.EncodeToString(encryptedData), nil
 }
 
-func CreatePayment() (string, error) {
+type PaymentResponse struct {
+	Status    string  `json:"status"`
+	Message   string  `json:"message"`
+	PaymentID string  `json:"payment_id"`
+	Amount    float64 `json:"amount"`
+	Currency  string  `json:"currency"`
+	InvoiceID string  `json:"invoice_id"`
+}
+
+func MakePayment() (*PaymentResponse, error) {
 	paymentUrl := "https://testepay.homebank.kz/api/payment/cryptopay"
 	token, err := GetToken()
 	if err != nil {
-		return "", fmt.Errorf("failed to get token: %v", err)
+		return nil, fmt.Errorf("failed to get token: %v", err)
 	}
 
 	encryptedData, err := encryptData()
 	if err != nil {
-		return "", fmt.Errorf("failed to encrypt data: %v", err)
+		return nil, fmt.Errorf("failed to encrypt data: %v", err)
 	}
 
 	body := map[string]interface{}{
@@ -163,12 +172,12 @@ func CreatePayment() (string, error) {
 	}
 	jsonBody, err := json.Marshal(body)
 	if err != nil {
-		return "", fmt.Errorf("failed to marshal body: %v", err)
+		return nil, fmt.Errorf("failed to marshal body: %v", err)
 	}
 
 	req, err := http.NewRequest("POST", paymentUrl, bytes.NewBuffer(jsonBody))
 	if err != nil {
-		return "", fmt.Errorf("failed to create request: %v", err)
+		return nil, fmt.Errorf("failed to create request: %v", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+token)
@@ -176,18 +185,17 @@ func CreatePayment() (string, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("failed to perform request: %v", err)
+		return nil, fmt.Errorf("failed to perform request: %v", err)
 	}
 	defer resp.Body.Close()
+	var paymentResponse PaymentResponse
 
-	respBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", fmt.Errorf("failed to read response body: %v", err)
+	if err = json.NewDecoder(resp.Body).Decode(&paymentResponse); err != nil {
+		return nil, fmt.Errorf("failed to decode JSON response: %v", err)
 	}
-
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("status: %s body: %s", resp.Status, respBody)
+		return nil, fmt.Errorf("status: %s, body: %s", resp.Status, paymentResponse)
 	}
-
-	return string(respBody), nil
+	fmt.Println(paymentResponse)
+	return &paymentResponse, nil
 }

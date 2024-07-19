@@ -1,12 +1,12 @@
 package models
 
 type Payment struct {
-	ID            int    `json:"id"`
-	UserID        int    `json:"user_id"`
-	OrderID       int    `json:"order_id"`
-	Amount        int    `json:"amount"`
-	PaymentDate   string `json:"payment_date"`
-	PaymentStatus string `json:"payment_status"`
+	ID            int     `json:"id"`
+	UserID        int     `json:"user_id"`
+	OrderID       int     `json:"order_id"`
+	Amount        float64 `json:"amount"`
+	PaymentDate   string  `json:"payment_date"`
+	PaymentStatus string  `json:"payment_status"`
 }
 
 type PaymentModel interface {

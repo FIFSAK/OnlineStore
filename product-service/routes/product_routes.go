@@ -6,13 +6,13 @@ import (
 	"net/http"
 )
 
-func Routes(router *mux.Router, userController *controllers.ProductController) {
+func Routes(router *mux.Router, productController *controllers.ProductController) {
 	productsRouter := router.PathPrefix("/products").Subrouter()
 
-	productsRouter.HandleFunc("", userController.GetProductsController).Methods(http.MethodGet)
-	productsRouter.HandleFunc("/{id:[0-9]+}", userController.GetProductByIDController).Methods(http.MethodGet)
-	productsRouter.HandleFunc("", userController.CreateProductController).Methods(http.MethodPost)
-	productsRouter.HandleFunc("/{id:[0-9]+}", userController.UpdateProductController).Methods(http.MethodPut)
-	productsRouter.HandleFunc("/{id:[0-9]+}", userController.DeleteProductController).Methods(http.MethodDelete)
-	productsRouter.HandleFunc("/search", userController.SearchProductController).Methods(http.MethodGet)
+	productsRouter.HandleFunc("", productController.GetProductsController).Methods(http.MethodGet)
+	productsRouter.HandleFunc("/{id:[0-9]+}", productController.GetProductByIDController).Methods(http.MethodGet)
+	productsRouter.HandleFunc("", productController.CreateProductController).Methods(http.MethodPost)
+	productsRouter.HandleFunc("/{id:[0-9]+}", productController.UpdateProductController).Methods(http.MethodPut)
+	productsRouter.HandleFunc("/{id:[0-9]+}", productController.DeleteProductController).Methods(http.MethodDelete)
+	productsRouter.HandleFunc("/search", productController.SearchProductController).Methods(http.MethodGet)
 }
