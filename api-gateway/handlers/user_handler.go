@@ -5,7 +5,6 @@ import (
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
-	"net/url"
 )
 
 const (
@@ -116,29 +115,7 @@ func DeleteUserHandler(writer http.ResponseWriter, request *http.Request) {
 
 func SearchUserHandler(writer http.ResponseWriter, request *http.Request) {
 	queryParams := request.URL.Query()
-
-	baseURL, err := url.Parse(urlUsersService + "/search")
-	if err != nil {
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	params := url.Values{}
-	for key, values := range queryParams {
-		for _, value := range values {
-			params.Add(key, value)
-		}
-	}
-	baseURL.RawQuery = params.Encode()
-
-	req, err := http.NewRequest(http.MethodGet, baseURL.String(), nil)
-	if err != nil {
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := http.Get(urlProductsService + "/search?" + queryParams.Encode())
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return

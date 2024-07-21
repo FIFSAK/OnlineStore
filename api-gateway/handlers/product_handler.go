@@ -4,7 +4,6 @@ import (
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
-	"net/url"
 )
 
 const urlProductsService = "http://localhost:8082/products"
@@ -127,25 +126,7 @@ func UpdateProductHandler(writer http.ResponseWriter, request *http.Request) {
 
 func SearchProductHandler(writer http.ResponseWriter, request *http.Request) {
 	queryParams := request.URL.Query()
-	baseURL, err := url.Parse(urlProductsService + "/search")
-	if err != nil {
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	params := url.Values{}
-	for key, value := range queryParams {
-		for _, v := range value {
-			params.Add(key, v)
-		}
-	}
-	baseURL.RawQuery = params.Encode()
-	req, err := http.NewRequest(http.MethodGet, baseURL.String(), nil)
-	if err != nil {
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := http.Get(urlProductsService + "/search?" + queryParams.Encode())
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
