@@ -4,19 +4,12 @@ import (
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
-	"net/url"
 )
 
-const urlOrdersService = "http://localhost:8083/orders"
+const urlPaymentService = "http://localhost:8084/payments"
 
-func GetOrdersHandler(writer http.ResponseWriter, request *http.Request) {
-	req, err := http.NewRequest(http.MethodGet, urlOrdersService, nil)
-	if err != nil {
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	client := &http.Client{}
-	resp, err := client.Do(req)
+func GetPaymentsHandler(writer http.ResponseWriter, request *http.Request) {
+	resp, err := http.Get(urlPaymentService)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
@@ -31,16 +24,11 @@ func GetOrdersHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func GetOrderByIDHandler(writer http.ResponseWriter, request *http.Request) {
+func GetPaymentByIDHandler(writer http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(request)
 	id := vars["id"]
-	req, err := http.NewRequest(http.MethodGet, urlOrdersService+"/"+id, nil)
-	if err != nil {
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	client := &http.Client{}
-	resp, err := client.Do(req)
+
+	resp, err := http.Get(urlPaymentService + "/" + id)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
@@ -55,20 +43,15 @@ func GetOrderByIDHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func CreateOrderHandler(writer http.ResponseWriter, request *http.Request) {
-	req, err := http.NewRequest(http.MethodPost, urlOrdersService, request.Body)
-	if err != nil {
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	client := &http.Client{}
-	resp, err := client.Do(req)
+func CreatePaymentHandler(writer http.ResponseWriter, request *http.Request) {
+	resp, err := http.Post(urlPaymentService, "application/json", request.Body)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer resp.Body.Close()
 	writer.Header().Set("Content-Type", "application/json")
+
 	writer.WriteHeader(resp.StatusCode)
 	_, err = io.Copy(writer, resp.Body)
 	if err != nil {
@@ -77,15 +60,17 @@ func CreateOrderHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func UpdateOrderHandler(writer http.ResponseWriter, request *http.Request) {
+func UpdatePaymentHandler(writer http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(request)
 	id := vars["id"]
-	req, err := http.NewRequest(http.MethodPut, urlOrdersService+"/"+id, request.Body)
+
+	client := &http.Client{}
+	req, err := http.NewRequest(http.MethodPut, urlPaymentService+"/"+id, request.Body)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	client := &http.Client{}
+
 	resp, err := client.Do(req)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
@@ -93,6 +78,7 @@ func UpdateOrderHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 	defer resp.Body.Close()
 	writer.Header().Set("Content-Type", "application/json")
+
 	writer.WriteHeader(resp.StatusCode)
 	_, err = io.Copy(writer, resp.Body)
 	if err != nil {
@@ -101,15 +87,17 @@ func UpdateOrderHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func DeleteOrderHandler(writer http.ResponseWriter, request *http.Request) {
+func DeletePaymentHandler(writer http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(request)
 	id := vars["id"]
-	req, err := http.NewRequest(http.MethodDelete, urlOrdersService+"/"+id, nil)
+
+	client := &http.Client{}
+	req, err := http.NewRequest(http.MethodDelete, urlPaymentService+"/"+id, nil)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	client := &http.Client{}
+
 	resp, err := client.Do(req)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
@@ -117,6 +105,7 @@ func DeleteOrderHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 	defer resp.Body.Close()
 	writer.Header().Set("Content-Type", "application/json")
+
 	writer.WriteHeader(resp.StatusCode)
 	_, err = io.Copy(writer, resp.Body)
 	if err != nil {
@@ -125,33 +114,16 @@ func DeleteOrderHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func SearchOrderHandler(writer http.ResponseWriter, request *http.Request) {
-	queryParams := request.URL.Query()
-	baseUrl, err := url.Parse(urlOrdersService + "/search")
-	if err != nil {
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	params := url.Values{}
-	for key, value := range queryParams {
-		for _, v := range value {
-			params.Add(key, v)
-		}
-	}
-	baseUrl.RawQuery = params.Encode()
-	req, err := http.NewRequest(http.MethodGet, baseUrl.String(), nil)
-	if err != nil {
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	client := &http.Client{}
-	resp, err := client.Do(req)
+func SearchPaymentHandler(writer http.ResponseWriter, request *http.Request) {
+	query := request.URL.Query()
+	resp, err := http.Get(urlPaymentService + "/search?" + query.Encode())
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer resp.Body.Close()
 	writer.Header().Set("Content-Type", "application/json")
+
 	writer.WriteHeader(resp.StatusCode)
 	_, err = io.Copy(writer, resp.Body)
 	if err != nil {

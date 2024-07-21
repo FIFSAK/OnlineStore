@@ -49,7 +49,7 @@ func (pr *PaymentRepository) GetPaymentByID(id int) (*models.Payment, error) {
 }
 
 func (pr *PaymentRepository) UpdatePayment(payment models.Payment) error {
-	_, err := pr.DB.Exec("UPDATE payments SET user_id = $1, order_id = $2, amount = $3 WHERE id = $5", payment.UserID, payment.OrderID, payment.Amount, payment.ID)
+	_, err := pr.DB.Exec("UPDATE payments SET user_id = $1, order_id = $2, amount = $3 WHERE id = $4", payment.UserID, payment.OrderID, payment.Amount, payment.ID)
 	if err != nil {
 		return err
 	}
