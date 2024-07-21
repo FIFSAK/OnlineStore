@@ -2,7 +2,9 @@ package routes
 
 import (
 	"OnlineStore/api-gateway/handlers"
+	_ "OnlineStore/docs"
 	"github.com/gorilla/mux"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"net/http"
 )
 
@@ -11,6 +13,8 @@ func Routes(router *mux.Router) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	}).Methods(http.MethodGet)
+
+	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
 	router = router.PathPrefix("/api").Subrouter()
 

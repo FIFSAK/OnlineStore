@@ -2,6 +2,7 @@ package main
 
 import (
 	"OnlineStore/api-gateway/routes"
+	_ "OnlineStore/docs"
 	"context"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -13,6 +14,11 @@ import (
 	"time"
 )
 
+// @title Online Store Service API
+// version 1.0
+// @description This is online store service API
+// @host localhost:8080
+// @BasePath /
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("Error loading .env file")
