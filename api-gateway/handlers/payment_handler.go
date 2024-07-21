@@ -2,11 +2,20 @@ package handlers
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 	"io"
+	"log"
 	"net/http"
+	"os"
 )
 
-const urlPaymentService = "http://localhost:8084/payments"
+func init() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("Error loading .env file")
+	}
+}
+
+var urlPaymentService = os.Getenv("PAYMENT_SERVICE_URL") + "/payments"
 
 func GetPaymentsHandler(writer http.ResponseWriter, request *http.Request) {
 	resp, err := http.Get(urlPaymentService)

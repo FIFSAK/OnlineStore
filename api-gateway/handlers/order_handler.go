@@ -2,11 +2,20 @@ package handlers
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 	"io"
+	"log"
 	"net/http"
+	"os"
 )
 
-const urlOrdersService = "http://localhost:8083/orders"
+func init() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("Error loading .env file")
+	}
+}
+
+var urlOrdersService = os.Getenv("ORDER_SERVICE_URL") + "/orders"
 
 func GetOrdersHandler(writer http.ResponseWriter, request *http.Request) {
 	req, err := http.NewRequest(http.MethodGet, urlOrdersService, nil)

@@ -3,12 +3,21 @@ package handlers
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 	"io"
+	"log"
 	"net/http"
+	"os"
 )
 
-const (
-	urlUsersService = "http://localhost:8081/users"
+func init() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("Error loading .env file")
+	}
+}
+
+var (
+	urlUsersService = os.Getenv("USER_SERVICE_URL") + "/users"
 )
 
 func GetUsersHandler(writer http.ResponseWriter, request *http.Request) {
