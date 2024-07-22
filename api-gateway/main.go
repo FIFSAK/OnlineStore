@@ -27,7 +27,10 @@ func main() {
 	router := mux.NewRouter()
 	routes.Routes(router)
 
-	port := "8080"
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 	server := &http.Server{
 		Addr:    ":" + port,
 		Handler: router,

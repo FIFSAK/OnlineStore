@@ -10,4 +10,4 @@ RUN go mod download
 
 EXPOSE 8083
 
-CMD ["go", "run", "/app/order-service", "."]
+CMD ["go", "run", "/app/order-service/main.go", "."]

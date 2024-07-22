@@ -10,4 +10,4 @@ RUN go mod download
 
 EXPOSE 8084
 
-CMD ["go", "run", "/app/payment-service", "."]
+CMD ["go", "run", "/app/payment-service/main.go", "."]

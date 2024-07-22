@@ -9,5 +9,5 @@ RUN go mod download
 
 EXPOSE 8080
 
-CMD ["go", "run", "/app/api-gateway", "."]
+CMD ["go", "run", "/app/api-gateway/main.go", "."]
 

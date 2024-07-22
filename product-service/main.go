@@ -45,7 +45,10 @@ func main() {
 		AllowCredentials: true,
 	}).Handler(router)
 
-	port := "8082"
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8082"
+	}
 	server := &http.Server{
 		Addr:    ":" + port,
 		Handler: corsHandler,

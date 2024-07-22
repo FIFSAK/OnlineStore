@@ -10,4 +10,4 @@ RUN go mod download
 
 EXPOSE 8081
 
-CMD ["go", "run", "/app/user-service", "."]
+CMD ["go", "run", "/app/user-service/main.go", "."]
