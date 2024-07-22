@@ -5,6 +5,8 @@ services:
       dockerfile: ./user-service/Dockerfile
     ports:
       - "10001:10001"
+    networks:
+      - private_net
 
 
 #  product-service:
@@ -40,4 +42,9 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - "10000:10000"
+    networks:
+      - private_net
 
+networks:
+  private_net:
+    driver: bridge
