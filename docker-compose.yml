@@ -1,7 +1,39 @@
-version: '3'
+version: '3.8'
+
 services:
-  app:
-    container_name: main_app
-    build: .
+  user-service:
+    build:
+      context: .
+      dockerfile: ./user-service/Dockerfile
+    ports:
+      - "8081:8081"
+  product-service:
+    build:
+      context: .
+      dockerfile: ./product-service/Dockerfile
+    ports:
+      - "8082:8082"
+  order-service:
+    build:
+      context: .
+      dockerfile: ./order-service/Dockerfile
+    ports:
+      - "8083:8083"
+  payment-service:
+    build:
+      context: .
+      dockerfile: ./payment-service/Dockerfile
+    ports:
+      - "8084:8084"
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     ports:
       - "8080:8080"
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
+      - payment-service

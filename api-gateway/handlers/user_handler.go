@@ -2,7 +2,6 @@ package handlers
 
 import (
 	_ "OnlineStore/user-service/models"
-	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"io"
@@ -35,7 +34,6 @@ type InputUser struct {
 // @Failure 404 {string} string "No users found"
 // @Failure 500 {string} string "Internal server error"
 func GetUsersHandler(writer http.ResponseWriter, request *http.Request) {
-	fmt.Println(urlUsersService)
 	req, err := http.NewRequest(http.MethodGet, urlUsersService, nil)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)

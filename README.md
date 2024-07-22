@@ -1,4 +1,4 @@
-# Project Management Service
+# Online Shop
 
 ## Routers
 
@@ -11,7 +11,7 @@
 - **Response:** Swagger UI
 
 ### Get Users
-- **Endpoint:** `GET /users`
+- **Endpoint:** `GET /api/users`
     - **Body:**
     - **Response:**
       ```json
@@ -28,7 +28,7 @@
 
 ### Create User
 
-- **Endpoint:** `POST /users`
+- **Endpoint:** `POST /api/users`
     - **Body:**
       ```json
       { 
@@ -39,7 +39,7 @@
       ```
 
 ### Get User
-- **Endpoint:** `GET /users/{ID}`
+- **Endpoint:** `GET /api/users/{ID}`
     - **Body:**
     - **Response:**
       ```json
@@ -54,7 +54,7 @@
 
 ### Update User
 
-- **Endpoint:** `PUT /users/{ID}`
+- **Endpoint:** `PUT /api/users/{ID}`
     - **Body:**
       ```json
       { 
@@ -64,15 +64,15 @@
       }
       ```
 ### Delete User
-- **Endpoint:** `DELETE /users/{ID}`
+- **Endpoint:** `DELETE /api/users/{ID}`
 
 ### Get User's Tasks
-- **Endpoint:** `GET /users/{ID}/tasks`
+- **Endpoint:** `GET /api/users/{ID}/tasks`
 
 
 ### Search User
 
-- **Endpoint:** `PUT /users/search?name=John Doe` | ?email={email}
+- **Endpoint:** `PUT /api/users/search?name=John Doe` | ?email={email}
 
 ### Get Tasks
 
