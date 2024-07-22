@@ -32,8 +32,3 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - "8080:8080"
-    depends_on:
-      - user-service
-      - product-service
-      - order-service
-      - payment-service
