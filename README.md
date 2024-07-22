@@ -8,201 +8,42 @@
 
 ### Swagger
 - **Endpoint:** `GET /swagger/index.html`
-- **Response:** Swagger UI
+- **Response:** Swagger UI with all the available endpoints
 
-### Get Users
-- **Endpoint:** `GET /api/users`
-    - **Body:**
-    - **Response:**
-      ```json
-      [
-      {
-      "id": 1,
-      "name": "John Doe", 
-      "email": "example@mail.com",
-      "role": "admin",
-      "registration_date": "2021-09-01T00:00:00Z"
-      }
-      ]
-      ```
-
-### Create User
-
-- **Endpoint:** `POST /api/users`
-    - **Body:**
-      ```json
-      { 
-      "name": "John Doe", 
-      "email": "example@mail.com",
-      "role": "admin"
-      }
-      ```
-
-### Get User
-- **Endpoint:** `GET /api/users/{ID}`
-    - **Body:**
-    - **Response:**
-      ```json
-      {
-      "id": 1,
-      "name": "John Doe", 
-      "email": "example@mail.ru",
-      "registration_date": "2021-09-01T00:00:00Z"
-      }
-      ```
-    
-
-### Update User
-
-- **Endpoint:** `PUT /api/users/{ID}`
-    - **Body:**
-      ```json
-      { 
-      "name": "New John Doe", 
-      "email": "example@mail.com",
-      "role": "admin"
-      }
-      ```
-### Delete User
-- **Endpoint:** `DELETE /api/users/{ID}`
-
-### Get User's Tasks
-- **Endpoint:** `GET /api/users/{ID}/tasks`
-
-
-### Search User
-
-- **Endpoint:** `PUT /api/users/search?name=John Doe` | ?email={email}
-
-### Get Tasks
-
-- **Endpoint:** `GET /tasks`
-
-### Create Task
-- **Endpoint:** `POST /tasks`
-    - **Body:**
-      ```json
-      { 
-      "title": "Task 1", 
-      "description": "Task 1 description",
-      "priority": "high medium low",
-      "status": "new done in_progress",
-      "responsible_user_id": 1,
-      "project_id": 1
-      }
-      ```
-
-### Get Task
-- **Endpoint:** `GET /tasks/{ID}`
-    - **Body:**
-    - **Response:**
-      ```json
-      {
-      "id": 1,
-      "title": "Task 1", 
-      "description": "Task 1 description",
-      "priority": "high medium low",
-      "status": "new done in_progress",
-      "responsible_user_id": 1,
-      "project_id": 1,
-      "creation_date": "2021-09-01T00:00:00Z",
-      "completion_date": ""
-      }
-      ```
-
-### Update Task
-- **Endpoint:** `PUT /tasks/{ID}`
-    - **Body:**
-      ```json
-      { 
-      "title": "New Task 1", 
-      "description": "Task 1 description",
-      "priority": "high medium low",
-      "status": "new done in_progress",
-      "responsible_user_id": 1,
-      "project_id": 1
-      }
-      ```
-### Delete Task
-- **Endpoint:** `DELETE /tasks/{ID}`
-
-### Search Task
-- **Endpoint:** `GET /tasks/search?title=Task 1` | ?priority={priority} | ?status={status} | ?assignee={responsible_user_id} | ?project_id={project_id}
-
-### Get Projects
-- **Endpoint:** `DELETE /projects`
-
-### Create Project
-- **Endpoint:** `POST /projects`
-    - **Body:**
-      ```json
-      { 
-      "title": "Project 1", 
-      "description": "Project 1 description",
-      "manager_id": 1
-      }
-      ```
-### Get Project
-- **Endpoint:** `GET /projects/{ID}`
-    - **Body:**
-    - **Response:**
-      ```json
-      {
-      "id": 1,
-      "title": "Project 1", 
-      "description": "Project 1 description",
-      "manager_id": 1,
-      "creation_date": "2021-09-01T00:00:00Z",
-      "completion_date": ""
-      }
-      ```
-### Update Project
-- **Endpoint:** `PUT /projects/{ID}`
-    - **Body:**
-      ```json
-      { 
-      "title": "New Project 1", 
-      "description": "Project 1 description",
-      "manager_id": 1
-      }
-      ```
-### Delete Project
-- **Endpoint:** `DELETE /projects/{ID}`
-
-### Search Project
-- **Endpoint:** `GET /projects/search?title=Project 1` | ?manager={user_id}
 
 ## Models Structure
 
 ```sql
-Type task_status = new | done | in_progress
-Type task_priority = high | medium | low
-
-Users {
+users {
     id: int,
-    name: string,
-    email: string,
-    role: string,
-    registration_date: date,
+    username: varchar(50),
+    email: varchar(50),
+    address: varchar(50),
+    registration_date: timestamp default current_timestamp,
+    role: varchar(50),
 }
-Tasks {
+products {
     id: int,
-    title: string,
-    description: string,
-    priority: task_priority,
-    status: task_status,
-    responsible_user_id: int,
-    project_id: int,
-    creation_date: date,
-    completion_date: date,
+    name: varchar(50),
+    description: text,
+    price: numeric,
+    category: varchar(50),
+    quantity: int,
 }
-Projects {
+orders {
     id: int,
-    title: string,
-    description: string,
-    manager_id: int,
-    creation_date: date,
-    completion_date: date,
+    user_id: int,
+    total_price: numeric,
+    order_date: timestamp default current_timestamp,
+    status: varchar(50),
+}
+payments {
+    id: int,
+    order_id: int,
+    user_id: int,
+    payment_date: timestamp default current_timestamp,
+    payment_status: varchar(50),
+    amount: numeric,
 }
 ```
 
@@ -210,20 +51,23 @@ Projects {
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/FIFSAK/ProjectManagementService
-   cd ProjectManagementService
+   git clone https://github.com/FIFSAK/OnlineStore
+   cd OnlineStore
    ```
+2. **Set up .env file like .env.example:**
 
-2. **Build the Docker images:**
+
+3. **Build the Docker images:**
    ```bash
    make build
    ```
-3. **Start the Docker containers:**
+4. **Start the Docker containers:**
    ```bash
    make up
    ```
-4. **Check the health of the server:**
+5. **Check the health of the server:**
    Open your browser and go to http://localhost:8080/health-check to ensure the server is running properly.
+
 
 6. **Stop the Docker containers:**
    ```bash
