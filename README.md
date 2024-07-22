@@ -1,5 +1,19 @@
 # Online Shop
 
+## Overview
+This is a simple microservice application that provides a RESTful API for an online shop. 
+The application provides endpoints for users, products, orders, and payments. 
+The application is containerized using Docker and docker-compose.
+
+## What's inside:
+- CRUD API
+- Request validation
+- Swagger docs
+- Environment configuration
+- Docker development environment
+- PostgreSQL database
+- Unit tests
+
 ## Routers
 
 ### Health Check
