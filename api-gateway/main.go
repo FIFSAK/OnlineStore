@@ -17,7 +17,7 @@ import (
 // @title Online Store Service API
 // version 1.0
 // @description This is online store service API
-// @host localhost:8080
+// @host onlinestore-bq6f.onrender.com
 // @BasePath /
 func main() {
 	if err := godotenv.Load(); err != nil {
@@ -27,10 +27,7 @@ func main() {
 	router := mux.NewRouter()
 	routes.Routes(router)
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
+	port := "10000"
 	server := &http.Server{
 		Addr:    ":" + port,
 		Handler: router,

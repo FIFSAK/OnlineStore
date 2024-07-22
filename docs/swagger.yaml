@@ -108,7 +108,7 @@ definitions:
       username:
         type: string
     type: object
-host: localhost:8080
+host: onlinestore-bq6f.onrender.com
 info:
   contact: {}
   description: This is online store service API

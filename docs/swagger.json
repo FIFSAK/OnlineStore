@@ -5,7 +5,7 @@
         "title": "Online Store Service API",
         "contact": {}
     },
-    "host": "localhost:8080",
+    "host": "onlinestore-bq6f.onrender.com",
     "basePath": "/",
     "paths": {
         "/api/orders": {
