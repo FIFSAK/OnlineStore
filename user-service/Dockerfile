@@ -8,6 +8,6 @@ COPY . /app/
 
 RUN go mod download
 
-EXPOSE 8081
+EXPOSE 10001
 
 CMD ["go", "run", "/app/user-service/main.go", "."]
