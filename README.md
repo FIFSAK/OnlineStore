@@ -88,4 +88,4 @@ payments {
    make down
    ```
 
-**LINK: https://projectmanagementservice.onrender.com**
+**LINK: https://onlinestore-bq6f.onrender.com/swagger/**
