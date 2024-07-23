@@ -9,6 +9,7 @@ import (
 	"context"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"os"
@@ -37,13 +38,13 @@ func main() {
 
 	router := mux.NewRouter()
 	routes.Routes(router, userController)
-	//
-	//corsHandler := cors.New(cors.Options{
-	//	AllowedOrigins:   []string{os.Getenv("BASE_URL")},
-	//	AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete},
-	//	AllowedHeaders:   []string{"Authorization", "Content-Type"},
-	//	AllowCredentials: true,
-	//}).Handler(router)
+
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins:   []string{os.Getenv("BASE_URL")},
+		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete},
+		AllowedHeaders:   []string{"Authorization", "Content-Type"},
+		AllowCredentials: true,
+	}).Handler(router)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -52,7 +53,7 @@ func main() {
 
 	server := &http.Server{
 		Addr:    ":" + port,
-		Handler: router,
+		Handler: corsHandler,
 	}
 
 	go gracefulShutdown(server)

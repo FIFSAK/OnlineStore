@@ -9,32 +9,32 @@ services:
       - private_net
 
 
-#  product-service:
-#    build:
-#      context: .
-#      dockerfile: ./product-service/Dockerfile
-#    ports:
-#      - "8082:8082"
-#    environment:
-#      - PORT=8082
-#
-#  order-service:
-#    build:
-#      context: .
-#      dockerfile: ./order-service/Dockerfile
-#    ports:
-#      - "8083:8083"
-#    environment:
-#      - PORT=8083
-#
-#  payment-service:
-#    build:
-#      context: .
-#      dockerfile: ./payment-service/Dockerfile
-#    ports:
-#      - "8084:8084"
-#    environment:
-#      - PORT=8084
+  product-service:
+    build:
+      context: .
+      dockerfile: ./product-service/Dockerfile
+    ports:
+      - "10002:10002"
+    environment:
+      - PORT=10002
+
+  order-service:
+    build:
+      context: .
+      dockerfile: ./order-service/Dockerfile
+    ports:
+      - "10003:10003"
+    environment:
+      - PORT=10003
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: ./payment-service/Dockerfile
+    ports:
+      - "10004:10004"
+    environment:
+      - PORT=10004
 
   api-gateway:
     build:
