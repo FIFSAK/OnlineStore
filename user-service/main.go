@@ -45,7 +45,11 @@ func main() {
 	//	AllowCredentials: true,
 	//}).Handler(router)
 
-	port := "10001"
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "10001"
+	}
+
 	server := &http.Server{
 		Addr:    ":" + port,
 		Handler: router,
