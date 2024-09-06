@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"OnlineStore/payment-service/models"
-	"OnlineStore/payment-service/services"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -74,7 +73,7 @@ func (pc *PaymentController) CreatePaymentController(writer http.ResponseWriter,
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
-	paymentResponse, err := services.MakePayment()
+	//paymentResponse, err := services.MakePayment()
 	if err != nil {
 		payment.PaymentStatus = "failed"
 		fmt.Printf("Payment failed: %v", err)
@@ -82,7 +81,7 @@ func (pc *PaymentController) CreatePaymentController(writer http.ResponseWriter,
 		return
 	} else {
 		log.Println("Payment is successful")
-		payment.PaymentStatus = paymentResponse.Status
+		//payment.PaymentStatus = paymentResponse.Status
 	}
 	err = pc.PaymentModel.CreatePayment(payment)
 	if err != nil {

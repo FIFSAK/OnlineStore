@@ -286,17 +286,45 @@ func TestSearchPaymentController(t *testing.T) {
 	assert.Equal(t, "Pending", payments[0].PaymentStatus)
 }
 
-func TestGetToken(t *testing.T) {
-	token, err := services.GetToken()
+//	func TestGetToken(t *testing.T) {
+//		token, err := services.GetToken()
+//		if err != nil {
+//			fmt.Println(err)
+//			return
+//		}
+//		fmt.Println(token)
+//
+// }
+const (
+	DefaultPaymentData = `{
+ "hpan":"4405639704015096","expDate":"0125","cvc":"815","terminalId":"67e34d63-102f-4bd1-898e-370781d0074d"
+}`
+)
+
+func TestMakePayment(t *testing.T) {
+	token, err := services.GetPaymentToken()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+	if token == "" {
+		fmt.Println("token is empty")
+		return
+	}
 	fmt.Println(token)
 
-}
-func TestMakePayment(t *testing.T) {
-	paymentResp, err := services.MakePayment()
+	encryptedData, err := services.EncryptData(DefaultPaymentData)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	if encryptedData == "" {
+		fmt.Println("encrypted data is empty")
+		return
+	}
+	fmt.Println(encryptedData)
+
+	paymentResp, err := services.MakePayment(token, encryptedData)
 	if err != nil {
 		fmt.Println(err)
 		return
