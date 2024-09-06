@@ -29,25 +29,69 @@ type CryptogramResponse struct {
 	TerminalId string `json:"terminalId"`
 }
 
+type TestData struct {
+	url          string
+	email        string
+	password     string
+	clientID     string
+	clientSecret string
+	terminalID   string
+}
+
+var testData = TestData{url: "https://test-epay.epayment.kz",
+	email:        "epay@halykbank.kz",
+	password:     "XZG1E@Mm",
+	clientID:     "test",
+	clientSecret: "yF587AV9Ms94qN2QShFzVR3vFnWkhjbAK3sG",
+	terminalID:   "67e34d63-102f-4bd1-898e-370781d0074d"}
+
 func GetToken() (string, error) {
-	tokenURL := "https://testoauth.homebank.kz/epay2/oauth2/token"
+	tokenURL := "https://test-epay-oauth.epayment.kz/oauth2/token"
 
 	// Создаем буфер для тела запроса и writer для multipart формы
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 
 	// Добавляем поля формы
-	writer.WriteField("grant_type", "client_credentials")
-	writer.WriteField("scope", "webapi usermanagement email_send verification statement statistics payment")
-	writer.WriteField("client_id", "test")
-	writer.WriteField("client_secret", "yF587AV9Ms94qN2QShFzVR3vFnWkhjbAK3sG")
-	writer.WriteField("invoiceId", "000000001")
-	writer.WriteField("amount", "100")
-	writer.WriteField("currency", "KZT")
-	writer.WriteField("terminalId", "67e34d63-102f-4bd1-898e-370781d0074d")
+	err := writer.WriteField("grant_type", "client_credentials")
+	if err != nil {
+		return "", err
+	}
+	err = writer.WriteField("scope", "webapi usermanagement email_send verification statement statistics payment")
+	if err != nil {
+		return "", err
+	}
+	err = writer.WriteField("client_id", "test")
+	if err != nil {
+		return "", err
+	}
+	err = writer.WriteField("client_secret", "yF587AV9Ms94qN2QShFzVR3vFnWkhjbAK3sG")
+	if err != nil {
+		return "", err
+	}
+	err = writer.WriteField("invoiceId", "000000001")
+	if err != nil {
+		return "", err
+	}
+	err = writer.WriteField("amount", "100")
+	if err != nil {
+		return "", err
+	}
+	err = writer.WriteField("currency", "KZT")
+	if err != nil {
+		return "", err
+	}
+	err = writer.WriteField("terminalId", "67e34d63-102f-4bd1-898e-370781d0074d")
+	if err != nil {
+		return "", err
+	}
+	err = writer.WriteField("failurePostLink", "")
+	if err != nil {
+		return "", err
+	}
 
 	// Закрываем writer чтобы отправить все данные
-	err := writer.Close()
+	err = writer.Close()
 	if err != nil {
 		return "", err
 	}
@@ -81,11 +125,12 @@ func GetToken() (string, error) {
 	if err != nil {
 		return "", err
 	}
+	fmt.Println(token)
 	return token.AccessToken, nil
 }
 
 func GetPublicKey() (*rsa.PublicKey, error) {
-	publicKeyURL := "https://testepay.homebank.kz/api/public.rsa"
+	publicKeyURL := "https://test-epay-api.epayment.kz/public.rsa"
 	resp, err := http.Get(publicKeyURL)
 	if err != nil {
 		return nil, err
@@ -143,7 +188,7 @@ type PaymentResponse struct {
 }
 
 func MakePayment() (*PaymentResponse, error) {
-	paymentUrl := "https://testepay.homebank.kz/api/payment/cryptopay"
+	paymentUrl := "https://test-epay-api.epayment.kz/payment/cryptopay"
 	token, err := GetToken()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get token: %v", err)
@@ -155,20 +200,14 @@ func MakePayment() (*PaymentResponse, error) {
 	}
 
 	body := map[string]interface{}{
-		"amount":          100,
-		"currency":        "KZT",
-		"name":            "JON JONSON",
-		"cryptogram":      encryptedData,
-		"invoiceId":       "000000001",
-		"invoiceIdAlt":    "8564546",
-		"description":     "test payment",
-		"accountId":       "uuid000001",
-		"email":           "jj@example.com",
-		"phone":           "77777777777",
-		"cardSave":        true,
-		"data":            `{\"statement\":{\"name\":\"Arman     Ali\",\"invoiceID\":\"80000016\"}}`,
-		"postLink":        "https://testmerchant/order/1123",
-		"failurePostLink": "https://testmerchant/order/1123/fail",
+		"amount":      100,
+		"currency":    "KZT",
+		"name":        "JON JONSON",
+		"cryptogram":  encryptedData,
+		"invoiceId":   "000001",
+		"description": "test payment",
+		"cardSave":    true,
+		"postLink":    "https://testmerchant/order/1123",
 	}
 	jsonBody, err := json.Marshal(body)
 	if err != nil {

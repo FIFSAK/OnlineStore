@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"OnlineStore/payment-service/models"
+	"OnlineStore/payment-service/services"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -282,4 +284,22 @@ func TestSearchPaymentController(t *testing.T) {
 
 	assert.Equal(t, 1, len(payments))
 	assert.Equal(t, "Pending", payments[0].PaymentStatus)
+}
+
+func TestGetToken(t *testing.T) {
+	token, err := services.GetToken()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(token)
+
+}
+func TestMakePayment(t *testing.T) {
+	paymentResp, err := services.MakePayment()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(paymentResp)
 }

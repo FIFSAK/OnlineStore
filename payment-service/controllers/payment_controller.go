@@ -78,6 +78,8 @@ func (pc *PaymentController) CreatePaymentController(writer http.ResponseWriter,
 	if err != nil {
 		payment.PaymentStatus = "failed"
 		fmt.Printf("Payment failed: %v", err)
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
 	} else {
 		log.Println("Payment is successful")
 		payment.PaymentStatus = paymentResponse.Status
